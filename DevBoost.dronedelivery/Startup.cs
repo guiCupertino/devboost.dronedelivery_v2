@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using DevBoost.DroneDelivery.Application.Resources;
+using Microsoft.AspNetCore.Http;
 
 namespace DevBoost.dronedelivery
 {
@@ -73,10 +74,13 @@ namespace DevBoost.dronedelivery
             services.AddScoped<IDroneService, DroneService>();
             services.AddScoped<IDroneItinerarioService, DroneItinerarioService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IClienteServices, ClienteServices>();
             services.AddScoped<IDroneItinerarioRepository, DroneItinerarioRepository>();
             services.AddScoped<IDroneRepository, DroneRepository>();
-            services.AddScoped<IPedidoRepository, PedidoRepository>();            
+            services.AddScoped<IPedidoRepository, PedidoRepository>();
+            services.AddScoped<IClienteRepository, ClienteRepository>();
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddDbContext<DCDroneDelivery>(options =>
             {

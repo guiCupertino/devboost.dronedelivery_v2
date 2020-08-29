@@ -25,11 +25,9 @@ namespace DevBoost.dronedelivery.Controllers
             _pedidoService = pedidoService;
         }
 
-        // GET: api/Drone
-        [HttpGet, Authorize(Roles = "ADMIN,USER")]
-        public async Task<ActionResult<IEnumerable<SituacaoDroneDTO>>> GetDrone()
+        [HttpGet("situacao-drone"), AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<SituacaoDroneDTO>>> GetSituacaoDrone()
         {
-
             var drones = await _droneService.GetAll();
 
             IList<SituacaoDroneDTO> situacaoDrones = new List<SituacaoDroneDTO>();
@@ -39,14 +37,14 @@ namespace DevBoost.dronedelivery.Controllers
                 SituacaoDroneDTO situacaoDrone = new SituacaoDroneDTO();
                 situacaoDrone.Drone = drone;
 
-                var droneItinerario =  _droneItinerarioService.GetAll().Result.SingleOrDefault(x => x.DroneId == drone.Id);
+                var droneItinerario = _droneItinerarioService.GetAll().Result.SingleOrDefault(x => x.DroneId == drone.Id);
 
                 if (droneItinerario == null)
                     situacaoDrone.StatusDrone = EnumStatusDrone.Disponivel.ToString();
                 else
                     situacaoDrone.StatusDrone = droneItinerario.StatusDrone.ToString();
 
-                var pedidos = await _pedidoService.GetAll();                 
+                var pedidos = await _pedidoService.GetAll();
 
                 situacaoDrone.Pedidos = pedidos.Where(p => p.Drone != null && p.Status != EnumStatusPedido.Entregue && p.Drone.Id == drone.Id).ToList(); ;
 
@@ -55,7 +53,7 @@ namespace DevBoost.dronedelivery.Controllers
 
             return Ok(situacaoDrones);
         }
-
+                
         // GET: api/Drone/5
         [HttpGet("{id}"), Authorize(Roles = "ADMIN,USER")]
         public async Task<ActionResult<Drone>> GetDrone(int id)

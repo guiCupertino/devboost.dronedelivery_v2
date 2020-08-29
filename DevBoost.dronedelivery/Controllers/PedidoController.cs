@@ -99,9 +99,12 @@ namespace DevBoost.dronedelivery.Controllers
             pedido.InformarHoraPedido(DateTime.Now);
             pedido.InformarStatus(EnumStatusPedido.AguardandoEntregador);
 
-            await _pedidoService.Insert(pedido);
+            var result = await _pedidoService.Insert(pedido);
                         
-            return CreatedAtAction("GetPedido", new { id = pedido.Id }, pedido);
+            if(result)
+                return CreatedAtAction("GetPedido", new { id = pedido.Id }, pedido);
+
+            return BadRequest();
         }
 
         // DELETE: api/Pedido/5
